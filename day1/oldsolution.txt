@@ -1,0 +1,63 @@
+package main
+
+import(
+	"bufio"
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"math"
+)
+
+
+func main(){
+	file, err := os.Open("input.txt")
+	if err != nil{
+		log.Fatal(err)
+	}
+	scanner:= bufio.NewScanner(file)
+	loc := 50
+	numZeros := 0
+	zerosHit := 0
+	for scanner.Scan(){
+		loc, zerosHit = moveLock(loc, scanner.Text())
+		numZeros = numZeros + zerosHit
+
+	}
+	fmt.Println(numZeros)
+	if err := scanner.Err(); err != nil{
+		log.Fatal(err)
+	}
+}
+
+func moveLock(loc int, turn string) (int, int){
+	direction := string(turn[0])
+	notches, _ := strconv.Atoi(turn[1:])
+	
+	if direction == "R"{
+		if loc + notches < 100{
+			return loc + notches, 0	
+		}else{
+			amountToZero := 100 - loc
+			notchesAroundZero := notches - amountToZero
+			timesHitZero := math.Floor(float64(notchesAroundZero) / 100.00)
+			return notchesAroundZero % 100, int(timesHitZero)+1
+		}
+		
+	}else if direction == "L"{
+		if loc - notches > 0{
+			return loc - notches, 0
+		}else if loc - notches == 0{
+			return loc - notches, 1
+		}else{
+			notchesAroundZero := notches - loc
+			timesHitZero := math.Floor(float64(notchesAroundZero) / 100.00)
+			if loc == 0{
+				return (100 - notchesAroundZero % 100) % 100, int(timesHitZero)	
+			}else{
+				return (100 - notchesAroundZero % 100) % 100, int(timesHitZero)	+ 1
+			}
+		}
+	}
+	return 1,0
+}
