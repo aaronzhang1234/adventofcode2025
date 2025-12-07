@@ -8,7 +8,7 @@ import (
 )
 
 
-func main(){
+func mainpt1(){
 	file, _ := os.Open("input.txt")
 	scanner:= bufio.NewScanner(file)
 	var forkMatrix [][]string
@@ -16,26 +16,20 @@ func main(){
 		lineSlice := strings.Split(scanner.Text(),"")
 		forkMatrix = append(forkMatrix, lineSlice)
 	}
-	isClean := false
+	fmt.Println(forkMatrix)
 	cleanable := 0
-	for !isClean{
-		fmt.Println(cleanable)
-		isClean = true
-		for i:=0;i<len(forkMatrix);i++{
-			for x:=0; x<len(forkMatrix[i]); x++{
-				if forkMatrix[i][x] == "@"{
-					if isCleanable(forkMatrix, i ,x){
-						forkMatrix[i][x] = "."
-						isClean = false
-						cleanable = cleanable +1	
-					}
+	for i:=0;i<len(forkMatrix);i++{
+		for x:=0; x<len(forkMatrix[i]); x++{
+			if forkMatrix[i][x] == "@"{
+				if isCleanablept1(forkMatrix, i ,x){
+					cleanable = cleanable +1	
 				}
 			}
 		}
 	}
 	fmt.Println(cleanable)
 }
-func isCleanable(matrix [][]string, i int, x int) bool {
+func isCleanablept1(matrix [][]string, i int, x int) bool {
 	validSpots:= make(map[string][]int)
 
 	validSpots["upper-left"] = []int{i-1, x-1}
