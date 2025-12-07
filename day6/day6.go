@@ -4,8 +4,9 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
+	"strconv"
+	"slices"
 )
 
 
@@ -26,7 +27,7 @@ func main(){
 	for i:=0;i<len(mathMatrix[0]);i++{
 		if isBorder(i, mathMatrix){	
 			total = total + createNumMatrix(lastBorder, i, mathMatrix)
-			lastBorder = i
+			lastBorder = i+1
 		}
 	}
 	total = total + createNumMatrix(lastBorder, largestSize, mathMatrix)
@@ -43,26 +44,38 @@ func isBorder(i int, matrix [][]string) bool{
 	return isBorder
 }
 func createNumMatrix(start, end int, matrix [][]string) int {
-	endMatrix := []string{}
+	var oufMatrix [][]string
 	for x:=0 ; x<len(matrix); x++{
 		array := []string{}
 		for i:=start;i<end;i++{
 			array = append(array, matrix[x][i])
 		}
-		endMatrix = append(endMatrix, strings.ReplaceAll(strings.Join(array,""), " ", ""))
+		oufMatrix = append(oufMatrix, array)
 	}
-	total := 1
-	for x:=0; x<len(endMatrix)-1; x++{
-		num,_ := strconv.Atoi(endMatrix[x])
-		if endMatrix[len(endMatrix)-1] == "*"{
-			total = total * num 
+	cephMatrix := switchMatrix(oufMatrix)
+	total:=1
+	for x:=0; x<len(cephMatrix); x++{
+		if slices.Contains(oufMatrix[len(oufMatrix)-1], "*"){
+			total = total * cephMatrix[x]
 		}
-		if endMatrix[len(endMatrix)-1] == "+"{
-			total = total + num 
+		if slices.Contains(oufMatrix[len(oufMatrix)-1], "+"){
+			total = total + cephMatrix[x]
 		}
 	}
-	if endMatrix[len(endMatrix)-1] == "+"{
+	if slices.Contains(oufMatrix[len(oufMatrix)-1], "+"){
 		return total-1
 	}
 	return total
+}
+func switchMatrix(matrix [][]string) []int{
+	var endMatrix []int
+	for x:=len(matrix[0])-1;x>=0;x--{
+		array := []string{}
+		for y:=0; y<len(matrix)-1; y++{
+			array = append(array, (matrix[y][x]))
+		}
+		num,_ := strconv.Atoi(strings.ReplaceAll(strings.Join(array,""), " ", ""))
+		endMatrix = append(endMatrix, num)
+	}
+	return endMatrix
 }
