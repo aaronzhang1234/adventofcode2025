@@ -10,19 +10,19 @@ import (
 	"sort"
 )
 
-type Junction struct{
+type Junctionpt1 struct{
 	x float64 
 	y float64
 	z float64
 	circuit int
 }
 
-type kv struct {
+type kvpt1 struct {
 	Key   string
 	Value float64
 }
 
-func main(){
+func mainpt1(){
 	file, _ := os.Open("input.txt")
 	scanner:= bufio.NewScanner(file)
 	var junctions []*Junction
@@ -51,14 +51,17 @@ func main(){
     })
 
 	for num, kv := range ss {
-		fmt.Println("Lets give it up for try %d", num)
+		if num==1000{
+			break
+		}
+		fmt.Println("Starting new connection")
 		juncLos := strings.Split(kv.Key, "-")
 		firstJuncLoc,_ := strconv.Atoi(juncLos[0])
 		secondJuncLoc,_ := strconv.Atoi(juncLos[1])
 		firstJunc, secondJunc := junctions[firstJuncLoc], junctions[secondJuncLoc]
-		if num==3918{
-			fmt.Printf("Solution is %f", firstJunc.x*secondJunc.x)
-		}
+		fmt.Println(firstJunc)
+		fmt.Println(secondJunc)
+		fmt.Println(circuits)
 		if firstJunc.circuit==-1 &&  secondJunc.circuit==-1{
 			circuits[len(circuits)+1] = []*Junction{firstJunc, secondJunc}
 			firstJunc.circuit, secondJunc.circuit = len(circuits), len(circuits)
@@ -73,24 +76,23 @@ func main(){
 			toRemoveCircuit := secondJunc.circuit
 			for _,o:= range circuits[secondJunc.circuit]{
 				o.circuit = firstJunc.circuit
+				fmt.Println(o)
 			}
 			circuits[firstJunc.circuit] = append(circuits[firstJunc.circuit], secondCircuitSlice...)
 			circuits[toRemoveCircuit] = nil
 		}
-		if len(circuits)>206{
-			if len(circuits[206])==1000{
-				fmt.Println(num)
-				break
-			}
-		}
+		fmt.Println(firstJunc)
+		fmt.Println(secondJunc)
+		fmt.Println(circuits)
     }
 	var lengths []int
 	for _,v := range circuits{
 		lengths = append(lengths, len(v))
 	}
 	sort.Ints(lengths[:])
+	fmt.Println(lengths)
 }
 
-func compareJunctionLengths(junc1, junc2 *Junction) float64 {
+func compareJunctionLengthspt1(junc1, junc2 *Junction) float64 {
 	return math.Sqrt(math.Pow(junc1.x-junc2.x,2) + math.Pow(junc1.y-junc2.y,2) + math.Pow(junc1.z-junc2.z,2))
 }
